@@ -127,5 +127,5 @@ let getArtist artist =
         Name = "Metallica";
         Listeners = 100;
         Plays = 200;
-        Similar = [ "Slayer"; "Megadeth"; "Anthrax" ]
+        Similar = [ "Megadeth"; "Anthrax" ]
     }
