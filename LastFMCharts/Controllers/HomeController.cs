@@ -59,20 +59,5 @@ namespace LastFMCharts.Controllers
                 return View();
             }
         }
-
-        [HttpGet]
-        public ActionResult TestEx()
-        {
-            try
-            {
-                LastFM.raiseEx("message");
-                return RedirectToAction("Compare");
-            }
-            catch (Exception)
-            {
-
-                return RedirectToAction("Index");
-            }
-        }
     }
 }
