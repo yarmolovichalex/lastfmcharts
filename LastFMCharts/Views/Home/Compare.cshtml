@@ -1,0 +1,32 @@
+﻿@model IEnumerable<LastFMCharts.Models.ArtistViewModel>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    @Html.ValidationSummary()
+
+    @if (Model == null)
+    {
+        using (Html.BeginForm("Compare", "Home"))
+        {
+            <span>Artist 1: </span><input name="artists[0]"/>
+            <span>Artist 2: </span><input name="artists[1]"/>
+            <span>Artist 3: </span><input name="artists[2]"/>
+            <input type="submit" value="Submit"/>
+        }
+    }
+    else
+    {
+        @Html.Partial("_ArtistInfoList")
+    }
+</body>
+</html>

@@ -1,0 +1,61 @@
+﻿<div>
+    Name: @Model.Name
+</div>
+<div>
+    <table>
+        <thead>
+            <tr>
+                Listeners: @Model.Listeners
+            </tr>
+            <tr>
+                Plays: @Model.Plays
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div>
+    Similar:
+    @foreach (var similar in Model.Similar)
+            {
+        <div>@similar</div>
+    }
+</div>
+
+<canvas id="listeners"></canvas>
+<canvas id="plays"></canvas>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+<script>
+        var listenersData = {
+            labels: ["Listeners"],
+            datasets: [
+                {
+                    fillColor: "rgba(220,220,220,0.5)",
+                    strokeColor: "rgba(220,220,220,0.8)",
+                    highlightFill: "rgba(220,220,220,0.75)",
+                    highlightStroke: "rgba(220,220,220,1)",
+                    data: [ parseInt('@Model.Listeners') ]
+                }
+            ]
+        };
+
+        var playsData = {
+            labels: ["Plays"],
+            datasets: [
+                {
+                    fillColor: "rgba(220,220,220,0.5)",
+                    strokeColor: "rgba(220,220,220,0.8)",
+                    highlightFill: "rgba(220,220,220,0.75)",
+                    highlightStroke: "rgba(220,220,220,1)",
+                    data: [ parseInt('@Model.Plays') ]
+                }
+            ]
+        };
+
+        var listenersChartContext = document.getElementById('listeners').getContext('2d');
+        new Chart(listenersChartContext).Bar(listenersData);
+
+        var playsChartContext = document.getElementById('plays').getContext('2d');
+        new Chart(playsChartContext).Bar(playsData);
+</script>

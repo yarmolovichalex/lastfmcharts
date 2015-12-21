@@ -1,0 +1,28 @@
+﻿@model LastFMCharts.Models.ArtistViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    @if (Model == null)
+    {
+        using (Html.BeginForm("Index", "Home"))
+        {
+            <span>Artist: </span><input name="artist"/>
+            <input type="submit" value="Submit"/>
+        }
+    }
+    else
+    {
+        @Html.Partial("_ArtistInfo")
+    }
+</body>
+</html>
