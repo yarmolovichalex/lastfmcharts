@@ -59,5 +59,11 @@ namespace LastFMCharts.Controllers
                 return View();
             }
         }
+
+        [HttpGet]
+        public ActionResult Test()
+        {
+            return null;
+        }
     }
 }

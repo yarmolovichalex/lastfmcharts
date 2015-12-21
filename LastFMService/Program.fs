@@ -109,23 +109,3 @@ let getArtist artist =
 
 let raiseEx message : unit =
     raise (Exception(message))
-
-let raiseEx2 message : unit =
-    raise (Exception(message))
-
-//module LastFM
-//
-//open System
-//open FSharp.Configuration
-//open FSharp.Data
-//open FSharp.Data.JsonExtensions
-//
-//type Artist = { Name: string; Listeners: int; Plays: int; Similar: seq<string> }
-//
-//let getArtist artist =
-//    {
-//        Name = "Metallica";
-//        Listeners = 100;
-//        Plays = 200;
-//        Similar = [ "Megadeth"; "Anthrax" ]
-//    }
