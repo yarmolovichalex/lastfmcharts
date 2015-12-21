@@ -109,3 +109,6 @@ let getArtist artist =
 
 let raiseEx message : unit =
     raise (Exception(message))
+
+let raiseEx2 message : unit =
+    raise (Exception(message))
