@@ -3,7 +3,7 @@
 open System
 open FSharp.Configuration
 open FSharp.Data
-open FSharp.Data.JsonExtensions
+open Newtonsoft.Json.Linq
 
 type Settings = AppSettings<"App.config">
 
@@ -74,20 +74,20 @@ let internal getArtistInfo artist =
 
 let internal parseGetArtistInfoResponse response =
     
-    let response = JsonValue.Parse(response)
+    let response = JObject.Parse(response)
     
-    let artist = response.TryGetProperty("artist")
+    let artist = response.["artist"]
     match artist with
-    | Some(artist)  ->  
+    | artist as JToken ->  
 
-        let name = artist?name.AsString()
-        let listeners = artist?stats?listeners.AsInteger()
-        let plays = artist?stats?playcount.AsInteger()
+        let name = artist.["name"].Value<string>()
+        let listeners = artist.["stats"].["listeners"].Value<int>()
+        let plays = artist.["stats"].["playcount"].Value<int>()
 
-        let similarArray = artist?similar?artist.AsArray()
+        let similarArray = artist.["similar"].["artist"].Value<JArray>()
         let similarSeq = seq {
             for artist in similarArray do
-                yield artist?name.AsString()
+                yield artist.["name"].Value<string>()
         }
 
         {
@@ -96,7 +96,7 @@ let internal parseGetArtistInfoResponse response =
             Plays = plays;
             Similar = similarSeq
         }
-    | _ -> failwith (response?message.AsString())
+    | _ -> failwith (response.["message"].Value<string>())
 //
 //let getAlbum artist album =
 //    getAlbumInfo artist album |> parseGetAlbumInfoResponse
