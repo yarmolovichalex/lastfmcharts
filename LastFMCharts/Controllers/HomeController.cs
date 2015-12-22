@@ -37,7 +37,7 @@ namespace LastFMCharts.Controllers
         }
 
         [HttpPost]
-        public ActionResult Compare(IEnumerable<string> artists)
+        public JsonResult Compare(IEnumerable<string> artists)
         {
             try
             {
@@ -51,12 +51,11 @@ namespace LastFMCharts.Controllers
                     Similar = result.Similar
                 }).ToList();
 
-                return View(model);
+                return Json(model);
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
+                return Json(ex.Message);
             }
         }
 

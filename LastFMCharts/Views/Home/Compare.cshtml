@@ -1,32 +1,134 @@
-﻿@model IEnumerable<LastFMCharts.Models.ArtistViewModel>
-
-@{
+﻿@{
     Layout = null;
 }
 
 <!DOCTYPE html>
 
-<html>
+<html ng-app="lastFMCharts">
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title></title>
+    <title>Last FM Charts</title>
 </head>
-<body>
-    @Html.ValidationSummary()
+<body ng-controller="MainCtrl as ctrl">
 
-    @if (Model == null)
-    {
-        using (Html.BeginForm("Compare", "Home"))
-        {
-            <span>Artist 1: </span><input name="artists[0]"/>
-            <span>Artist 2: </span><input name="artists[1]"/>
-            <span>Artist 3: </span><input name="artists[2]"/>
-            <input type="submit" value="Submit"/>
-        }
-    }
-    else
-    {
-        @Html.Partial("_ArtistInfoList")
-    }
+    <form ng-submit="ctrl.submit()">
+        <label>Artist 1: </label><input type="text" ng-model="ctrl.artists[0]" />
+        <label>Artist 2: </label><input type="text" ng-model="ctrl.artists[1]" />
+        <label>Artist 3: </label><input type="text" ng-model="ctrl.artists[2]" />
+        <input type="submit" value="Submit" />
+    </form>
+
+    <div ng-show="ctrl.artistsInfo.length !== 0">
+        <div>Listeners:</div>
+        <div>
+            <canvas id="listeners" width="600" height="400"></canvas>
+        </div>
+
+        <div>Plays:</div>
+        <div>
+            <canvas id="plays" width="600" height="400"></canvas>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+
+    <script type="text/javascript">
+        angular.module('lastFMCharts', [])
+            .controller('MainCtrl', [
+                '$http', function ($http) {
+                    var self = this;
+                    self.artists = [];
+                    self.artistsInfo = [];
+
+                    self.createCharts = function () {
+
+                        var listenersData = {
+                            labels: [
+                                self.artistsInfo[0].Name,
+                                self.artistsInfo[1].Name,
+                                self.artistsInfo[2].Name
+                            ],
+                            datasets: [
+                                {
+                                    fillColor: "rgba(220,220,220,0.5)",
+                                    strokeColor: "rgba(220,220,220,0.8)",
+                                    highlightFill: "rgba(220,220,220,0.75)",
+                                    highlightStroke: "rgba(220,220,220,1)",
+                                    data: [
+                                        self.artistsInfo[0].Listeners,
+                                        self.artistsInfo[1].Listeners,
+                                        self.artistsInfo[2].Listeners
+                                    ]
+                                }
+                            ]
+                        };
+
+                        var playsData = {
+                            labels: [
+                                self.artistsInfo[0].Name,
+                                self.artistsInfo[1].Name,
+                                self.artistsInfo[2].Name
+                            ],
+                            datasets: [
+                                {
+                                    fillColor: "rgba(151,187,205,0.5)",
+                                    strokeColor: "rgba(151,187,205,0.8)",
+                                    highlightFill: "rgba(151,187,205,0.75)",
+                                    highlightStroke: "rgba(151,187,205,1)",
+                                    data: [
+                                        self.artistsInfo[0].Plays,
+                                        self.artistsInfo[1].Plays,
+                                        self.artistsInfo[2].Plays
+                                    ]
+                                }
+                            ]
+                        };
+
+                        var listenersChartContext = document.getElementById('listeners').getContext('2d');
+                        new Chart(listenersChartContext).Bar(listenersData);
+
+                        var playsChartContext = document.getElementById('plays').getContext('2d');
+                        new Chart(playsChartContext).Bar(playsData);
+                    };
+
+                    //var createCharts2 = function (data) {
+                    //    var listenersData = {
+                    //        labels: [
+                    //            "Name1",
+                    //            "Name2",
+                    //            "Name3"
+                    //        ],
+                    //        datasets: [
+                    //            {
+                    //                fillColor: "rgba(220,220,220,0.5)",
+                    //                strokeColor: "rgba(220,220,220,0.8)",
+                    //                highlightFill: "rgba(220,220,220,0.75)",
+                    //                highlightStroke: "rgba(220,220,220,1)",
+                    //                data: [
+                    //                    123, 456, 567
+                    //                ]
+                    //            }
+                    //        ]
+                    //    };
+                    //    var listenersChartContext = document.getElementById('listeners').getContext('2d');
+                    //    new Chart(listenersChartContext).Bar(listenersData);
+                    //}
+                        
+
+                    self.submit = function () {
+                        $http.post('@Url.Action("Compare")', { artists: self.artists })
+                            .then(function (response) {
+                                console.log(response.data);
+                                self.artistsInfo = response.data;
+                                self.createCharts();
+                            }, function(error) {
+                                console.log(error);
+                            });
+                    };
+                }
+            ])
+    </script>
+
 </body>
 </html>
