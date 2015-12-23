@@ -41,7 +41,13 @@
                     self.artists = [];
                     self.artistsInfo = [];
 
-                    self.createCharts = function () {
+                    self.listenersChart = new Chart(document.getElementById('listeners').getContext('2d'));
+                    self.playsChart = new Chart(document.getElementById('plays').getContext('2d'));
+
+                    self.listenersChartFilled = null;
+                    self.playsChartFilled = null;
+
+                    self.fillCharts = function () {
 
                         var listenersData = {
                             labels: [
@@ -85,43 +91,22 @@
                             ]
                         };
 
-                        var listenersChartContext = document.getElementById('listeners').getContext('2d');
-                        new Chart(listenersChartContext).Bar(listenersData);
-
-                        var playsChartContext = document.getElementById('plays').getContext('2d');
-                        new Chart(playsChartContext).Bar(playsData);
+                        self.listenersChartFilled = self.listenersChart.Bar(listenersData);
+                        self.playsChartFilled = self.playsChart.Bar(playsData);
                     };
-
-                    //var createCharts2 = function (data) {
-                    //    var listenersData = {
-                    //        labels: [
-                    //            "Name1",
-                    //            "Name2",
-                    //            "Name3"
-                    //        ],
-                    //        datasets: [
-                    //            {
-                    //                fillColor: "rgba(220,220,220,0.5)",
-                    //                strokeColor: "rgba(220,220,220,0.8)",
-                    //                highlightFill: "rgba(220,220,220,0.75)",
-                    //                highlightStroke: "rgba(220,220,220,1)",
-                    //                data: [
-                    //                    123, 456, 567
-                    //                ]
-                    //            }
-                    //        ]
-                    //    };
-                    //    var listenersChartContext = document.getElementById('listeners').getContext('2d');
-                    //    new Chart(listenersChartContext).Bar(listenersData);
-                    //}
                         
-
                     self.submit = function () {
                         $http.post('@Url.Action("Compare")', { artists: self.artists })
                             .then(function (response) {
+                                if (self.listenersChartFilled != null && self.playsChartFilled != null) {
+                                    self.listenersChartFilled.destroy();
+                                    self.playsChartFilled.destroy();
+                                }
+
                                 console.log(response.data);
                                 self.artistsInfo = response.data;
-                                self.createCharts();
+                                
+                                self.fillCharts();
                             }, function(error) {
                                 console.log(error);
                             });
