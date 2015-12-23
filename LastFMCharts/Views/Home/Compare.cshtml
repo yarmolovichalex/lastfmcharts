@@ -8,15 +8,26 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Last FM Charts</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
 </head>
 <body ng-controller="MainCtrl as ctrl">
 
-    <form ng-submit="ctrl.submit()">
-        <label>Artist 1: </label><input type="text" ng-model="ctrl.artists[0]" />
-        <label>Artist 2: </label><input type="text" ng-model="ctrl.artists[1]" />
-        <label>Artist 3: </label><input type="text" ng-model="ctrl.artists[2]" />
-        <input type="submit" value="Submit" />
-    </form>
+<form ng-submit="ctrl.submit()">
+    <div class="form-group">
+        <label>Artist 1: </label>
+        <input type="text" ng-model="ctrl.artists[0]" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label>Artist 2: </label>
+        <input type="text" ng-model="ctrl.artists[1]" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label>Artist 3: </label>
+        <input type="text" ng-model="ctrl.artists[2]" class="form-control"/>
+    </div>
+
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
 
     <div ng-show="ctrl.artistsInfo.length !== 0">
         <div>Listeners:</div>
