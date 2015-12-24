@@ -72,6 +72,18 @@ let internal getArtistInfo artist =
 
     processResponse response
 
+let internal getArtistSuggestionsInternal userInput =
+
+    let response = Http.Request(
+                           Settings.LastfmApi.AbsoluteUri, 
+                           query = [ "format", "json";
+                                     "api_key", Settings.LastfmKey;
+                                     "method", "artist.search";
+                                     "artist", userInput ],
+                           silentHttpErrors = true)
+
+    processResponse response
+
 let internal parseGetArtistInfoResponse response =
     
     let response = JObject.Parse(response)
@@ -97,6 +109,22 @@ let internal parseGetArtistInfoResponse response =
             Similar = similarSeq
         }
     | _ -> failwith (response.["message"].Value<string>())
+
+let internal parseGetArtistSuggestionsInternalResponse response =
+
+    let response = JObject.Parse(response)
+
+    let results = response.["results"]
+    match results with
+    | results as JToken ->
+        let suggestionsArtistsArray = results.["artistmatches"].["artist"].Value<JArray>()
+        let suggestionsArtists = seq {
+            for suggestionArtist in suggestionsArtistsArray do
+                yield suggestionArtist.["name"].Value<string>()
+        }
+        suggestionsArtists
+    | _ -> failwith (response.["message"].Value<string>())
+
 //
 //let getAlbum artist album =
 //    getAlbumInfo artist album |> parseGetAlbumInfoResponse
@@ -106,6 +134,13 @@ let getArtist artist =
         getArtistInfo artist |> parseGetArtistInfoResponse
     with 
     | ex -> raise(Exception("Failed to get artist '" + artist + "': " + ex.Message))
+
+let getArtistSuggestions userInput =
+    try 
+        getArtistSuggestionsInternal userInput |> parseGetArtistSuggestionsInternalResponse
+    with
+    | ex -> raise(Exception("Failed to get suggestions for artist '" + userInput + "': " + ex.Message))
+
 //
 //let raiseEx message : unit =
 //    raise (Exception(message))

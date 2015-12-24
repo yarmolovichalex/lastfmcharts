@@ -59,10 +59,17 @@ namespace LastFMCharts.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult Test()
+        [HttpPost]
+        public JsonResult GetArtistsSuggestions(string userInput)
         {
-            return null;
+            try
+            {
+                return Json(LastFM.getArtistSuggestions(userInput).Where(x => x.StartsWith(userInput, StringComparison.InvariantCultureIgnoreCase)).Take(5));
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
         }
     }
 }

@@ -8,26 +8,30 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Last FM Charts</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body ng-controller="MainCtrl as ctrl">
 
-<form ng-submit="ctrl.submit()">
-    <div class="form-group">
-        <label>Artist 1: </label>
-        <input type="text" ng-model="ctrl.artists[0]" class="form-control"/>
-    </div>
-    <div class="form-group">
-        <label>Artist 2: </label>
-        <input type="text" ng-model="ctrl.artists[1]" class="form-control"/>
-    </div>
-    <div class="form-group">
-        <label>Artist 3: </label>
-        <input type="text" ng-model="ctrl.artists[2]" class="form-control"/>
-    </div>
+    <form ng-submit="ctrl.submit()">
 
-    <button type="submit" class="btn btn-default">Submit</button>
-</form>
+        <div class="form-group">
+            <label>Artist 1: </label>
+            <autocomplete attr-input-class="form-control" ng-model="ctrl.artists[0]" data="ctrl.artistsSuggestions" on-type="ctrl.updateArtistsSuggestions"></autocomplete>
+        </div>
+        <div class="form-group">
+            <label>Artist 2: </label>
+            <autocomplete attr-input-class="form-control" ng-model="ctrl.artists[1]" data="ctrl.artistsSuggestions" on-type="ctrl.updateArtistsSuggestions"></autocomplete>
+        </div>
+        <div class="form-group">
+            <label>Artist 3: </label>
+            <autocomplete attr-input-class="form-control" ng-model="ctrl.artists[2]" data="ctrl.artistsSuggestions" on-type="ctrl.updateArtistsSuggestions"></autocomplete>
+        </div>
+
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+
+    <br />
 
     <div ng-show="ctrl.artistsInfo.length !== 0">
         <div>Listeners:</div>
@@ -43,9 +47,10 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.js"></script>
 
     <script type="text/javascript">
-        angular.module('lastFMCharts', [])
+        angular.module('lastFMCharts', ['autocomplete'])
             .controller('MainCtrl', [
                 '$http', function ($http) {
                     var self = this;
@@ -59,13 +64,14 @@
                     self.playsChartFilled = null;
 
                     self.fillCharts = function () {
+                        var labels = [
+                            self.artistsInfo[0].Name,
+                            self.artistsInfo[1].Name,
+                            self.artistsInfo[2].Name
+                        ];
 
                         var listenersData = {
-                            labels: [
-                                self.artistsInfo[0].Name,
-                                self.artistsInfo[1].Name,
-                                self.artistsInfo[2].Name
-                            ],
+                            labels: labels,
                             datasets: [
                                 {
                                     fillColor: "rgba(220,220,220,0.5)",
@@ -82,11 +88,7 @@
                         };
 
                         var playsData = {
-                            labels: [
-                                self.artistsInfo[0].Name,
-                                self.artistsInfo[1].Name,
-                                self.artistsInfo[2].Name
-                            ],
+                            labels: labels,
                             datasets: [
                                 {
                                     fillColor: "rgba(151,187,205,0.5)",
@@ -105,7 +107,7 @@
                         self.listenersChartFilled = self.listenersChart.Bar(listenersData);
                         self.playsChartFilled = self.playsChart.Bar(playsData);
                     };
-                        
+
                     self.submit = function () {
                         $http.post('@Url.Action("Compare")', { artists: self.artists })
                             .then(function (response) {
@@ -116,9 +118,20 @@
 
                                 console.log(response.data);
                                 self.artistsInfo = response.data;
-                                
                                 self.fillCharts();
-                            }, function(error) {
+                            }, function (error) {
+                                console.log(error);
+                            });
+                    };
+
+                    self.artistsSuggestions = [];
+
+                    self.updateArtistsSuggestions = function (userInput) {
+                        $http.post('@Url.Action("GetArtistsSuggestions")', { userInput: userInput })
+                            .then(function (response) {
+                                console.log(response.data);
+                                self.artistsSuggestions = response.data;
+                            }, function (error) {
                                 console.log(error);
                             });
                     };
