@@ -36,12 +36,12 @@
     <div ng-show="ctrl.artistsInfo.length !== 0">
         <div>Listeners:</div>
         <div>
-            <canvas id="listeners" width="600" height="400"></canvas>
+            <canvas id="listeners"></canvas>
         </div>
 
         <div>Plays:</div>
         <div>
-            <canvas id="plays" width="600" height="400"></canvas>
+            <canvas id="plays"></canvas>
         </div>
     </div>
 
@@ -57,6 +57,7 @@
                     self.artists = [];
                     self.artistsInfo = [];
 
+                    Chart.defaults.global.responsive = true;
                     self.listenersChart = new Chart(document.getElementById('listeners').getContext('2d'));
                     self.playsChart = new Chart(document.getElementById('plays').getContext('2d'));
 
@@ -106,6 +107,7 @@
 
                         self.listenersChartFilled = self.listenersChart.Bar(listenersData);
                         self.playsChartFilled = self.playsChart.Bar(playsData);
+                        window.dispatchEvent(new Event('resize'));
                     };
 
                     self.submit = function () {
