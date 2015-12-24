@@ -6,7 +6,7 @@ using LastFMCharts.Models;
 
 namespace LastFMCharts.Controllers
 {
-    public class HomeController : Controller
+    public class ChartController : Controller
     {
         [HttpGet]
         public ActionResult Index()
