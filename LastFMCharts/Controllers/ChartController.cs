@@ -64,7 +64,7 @@ namespace LastFMCharts.Controllers
         {
             try
             {
-                return Json(LastFM.getArtistSuggestions(userInput).Where(x => x.StartsWith(userInput, StringComparison.InvariantCultureIgnoreCase)).Take(5));
+                return Json(LastFM.getArtistSuggestions(userInput).Take(5));
             }
             catch (Exception ex)
             {
