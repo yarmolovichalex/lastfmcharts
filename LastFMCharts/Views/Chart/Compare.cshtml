@@ -54,12 +54,14 @@
                     self.artistsSuggestions = [];
 
                     self.updateArtistsSuggestions = function (userInput) {
-                        $http.post('@Url.Action("GetArtistsSuggestions")', { userInput: userInput })
+                        if (userInput) {
+                            $http.post('@Url.Action("GetArtistsSuggestions")', { userInput: userInput })
                             .then(function (response) {
                                 self.artistsSuggestions = response.data;
                             }, function (error) {
                                 console.log(error);
                             });
+                        }
                     };
 
                     self.submit = function () {
