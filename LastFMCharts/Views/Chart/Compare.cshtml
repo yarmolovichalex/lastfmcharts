@@ -65,6 +65,11 @@
                     self.playsChartFilled = null;
 
                     self.fillCharts = function () {
+                        if (self.listenersChartFilled != null && self.playsChartFilled != null) {
+                            self.listenersChartFilled.destroy();
+                            self.playsChartFilled.destroy();
+                        }
+
                         var labels = [
                             self.artistsInfo[0].Name,
                             self.artistsInfo[1].Name,
@@ -113,12 +118,6 @@
                     self.submit = function () {
                         $http.post('@Url.Action("Compare")', { artists: self.artists })
                             .then(function (response) {
-                                if (self.listenersChartFilled != null && self.playsChartFilled != null) {
-                                    self.listenersChartFilled.destroy();
-                                    self.playsChartFilled.destroy();
-                                }
-
-                                console.log(response.data);
                                 self.artistsInfo = response.data;
                                 self.fillCharts();
                             }, function (error) {
@@ -131,7 +130,6 @@
                     self.updateArtistsSuggestions = function (userInput) {
                         $http.post('@Url.Action("GetArtistsSuggestions")', { userInput: userInput })
                             .then(function (response) {
-                                console.log(response.data);
                                 self.artistsSuggestions = response.data;
                             }, function (error) {
                                 console.log(error);
