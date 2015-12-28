@@ -42,6 +42,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
     <script src="~/Scripts/autocomplete.js"></script>
+    <script src="~/Scripts/chart.js"></script>
 
     <script type="text/javascript">
         angular.module('lastFMCharts', ['autocomplete'])
@@ -50,83 +51,22 @@
                     var self = this;
                     self.artists = [null, null];
                     self.artistsInfo = [];
-
-                    Chart.defaults.global.responsive = true;
-                    self.listenersChartContext = new Chart(document.getElementById('listeners').getContext('2d'));
-                    self.playsChartContext = new Chart(document.getElementById('plays').getContext('2d'));
-
-                    self.listenersChart = null;
-                    self.playsChart = null;
-
-                    self.fillCharts = function () {
-                        if (self.listenersChart != null) {
-                            self.listenersChart.destroy();
-                        }
-
-                        if (self.playsChart != null) {
-                            self.playsChart.destroy();
-                        }
-
-                        var labels = [];
-                        var listeners = [];
-                        var plays = [];
-
-                        var artistsInfoLength = self.artistsInfo.length;
-
-                        for (var i = 0; i < artistsInfoLength; i++) {
-                            var artistInfo = self.artistsInfo[i];
-                            labels.push(artistInfo.Name);
-                            listeners.push(artistInfo.Listeners);
-                            plays.push(artistInfo.Plays);
-                        };
-
-                        var listenersData = {
-                            labels: labels,
-                            datasets: [
-                                {
-                                    fillColor: "rgba(220,220,220,0.5)",
-                                    strokeColor: "rgba(220,220,220,0.8)",
-                                    highlightFill: "rgba(220,220,220,0.75)",
-                                    highlightStroke: "rgba(220,220,220,1)",
-                                    data: listeners
-                                }
-                            ]
-                        };
-
-                        var playsData = {
-                            labels: labels,
-                            datasets: [
-                                {
-                                    fillColor: "rgba(151,187,205,0.5)",
-                                    strokeColor: "rgba(151,187,205,0.8)",
-                                    highlightFill: "rgba(151,187,205,0.75)",
-                                    highlightStroke: "rgba(151,187,205,1)",
-                                    data: plays
-                                }
-                            ]
-                        };
-
-                        self.listenersChart = self.listenersChartContext.Bar(listenersData);
-                        self.playsChart = self.playsChartContext.Bar(playsData);
-                        window.dispatchEvent(new Event('resize'));
-                    };
-
-                    self.submit = function () {
-                        $http.post('@Url.Action("Compare")', { artists: self.artists })
-                            .then(function (response) {
-                                self.artistsInfo = response.data;
-                                self.fillCharts();
-                            }, function (error) {
-                                console.log(error);
-                            });
-                    };
-
                     self.artistsSuggestions = [];
 
                     self.updateArtistsSuggestions = function (userInput) {
                         $http.post('@Url.Action("GetArtistsSuggestions")', { userInput: userInput })
                             .then(function (response) {
                                 self.artistsSuggestions = response.data;
+                            }, function (error) {
+                                console.log(error);
+                            });
+                    };
+
+                    self.submit = function () {
+                        $http.post('@Url.Action("Compare")', { artists: self.artists })
+                            .then(function (response) {
+                                self.artistsInfo = response.data;
+                                fillCharts(self.artistsInfo);
                             }, function (error) {
                                 console.log(error);
                             });

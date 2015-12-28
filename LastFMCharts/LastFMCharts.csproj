@@ -91,6 +91,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Scripts\autocomplete.js" />
+    <Content Include="Scripts\chart.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
