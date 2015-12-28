@@ -16,7 +16,7 @@
     <form name="artistsForm" ng-submit="ctrl.submit()">
         <div ng-repeat="artist in ctrl.artists track by $index" class="form-group">
             <div class="row">
-                <span class="label label-default">Artist {{$index + 1}}: </span>
+                <span ng-cloak class="label label-default">Artist {{$index + 1}}: </span>
             </div>
             <div class="row">
                 <div class="col-xs-10">
