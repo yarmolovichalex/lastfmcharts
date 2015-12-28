@@ -14,22 +14,16 @@
 <body ng-controller="MainCtrl as ctrl">
 
     <form ng-submit="ctrl.submit()">
-
-        <div class="form-group">
-            <label>Artist 1: </label>
-            <autocomplete attr-input-class="form-control" ng-model="ctrl.artists[0]" data="ctrl.artistsSuggestions" on-type="ctrl.updateArtistsSuggestions"></autocomplete>
+        <div ng-repeat="artist in ctrl.artists track by $index" class="form-group">
+            <label>Artist {{$index + 1}}: </label>
+            <autocomplete attr-input-class="form-control" ng-model="ctrl.artists[$index]" data="ctrl.artistsSuggestions" on-type="ctrl.updateArtistsSuggestions"></autocomplete>
         </div>
-        <div class="form-group">
-            <label>Artist 2: </label>
-            <autocomplete attr-input-class="form-control" ng-model="ctrl.artists[1]" data="ctrl.artistsSuggestions" on-type="ctrl.updateArtistsSuggestions"></autocomplete>
-        </div>
-        <div class="form-group">
-            <label>Artist 3: </label>
-            <autocomplete attr-input-class="form-control" ng-model="ctrl.artists[2]" data="ctrl.artistsSuggestions" on-type="ctrl.updateArtistsSuggestions"></autocomplete>
-        </div>
-
         <button type="submit" class="btn btn-default">Submit</button>
     </form>
+
+    <br />
+
+    <button ng-click="ctrl.addArtist()" class="btn btn-default">Add Artist</button>
 
     <br />
 
@@ -54,27 +48,37 @@
             .controller('MainCtrl', [
                 '$http', function ($http) {
                     var self = this;
-                    self.artists = [];
+                    self.artists = [null, null];
                     self.artistsInfo = [];
 
                     Chart.defaults.global.responsive = true;
-                    self.listenersChart = new Chart(document.getElementById('listeners').getContext('2d'));
-                    self.playsChart = new Chart(document.getElementById('plays').getContext('2d'));
+                    self.listenersChartContext = new Chart(document.getElementById('listeners').getContext('2d'));
+                    self.playsChartContext = new Chart(document.getElementById('plays').getContext('2d'));
 
-                    self.listenersChartFilled = null;
-                    self.playsChartFilled = null;
+                    self.listenersChart = null;
+                    self.playsChart = null;
 
                     self.fillCharts = function () {
-                        if (self.listenersChartFilled != null && self.playsChartFilled != null) {
-                            self.listenersChartFilled.destroy();
-                            self.playsChartFilled.destroy();
+                        if (self.listenersChart != null) {
+                            self.listenersChart.destroy();
                         }
 
-                        var labels = [
-                            self.artistsInfo[0].Name,
-                            self.artistsInfo[1].Name,
-                            self.artistsInfo[2].Name
-                        ];
+                        if (self.playsChart != null) {
+                            self.playsChart.destroy();
+                        }
+
+                        var labels = [];
+                        var listeners = [];
+                        var plays = [];
+
+                        var artistsInfoLength = self.artistsInfo.length;
+
+                        for (var i = 0; i < artistsInfoLength; i++) {
+                            var artistInfo = self.artistsInfo[i];
+                            labels.push(artistInfo.Name);
+                            listeners.push(artistInfo.Listeners);
+                            plays.push(artistInfo.Plays);
+                        };
 
                         var listenersData = {
                             labels: labels,
@@ -84,11 +88,7 @@
                                     strokeColor: "rgba(220,220,220,0.8)",
                                     highlightFill: "rgba(220,220,220,0.75)",
                                     highlightStroke: "rgba(220,220,220,1)",
-                                    data: [
-                                        self.artistsInfo[0].Listeners,
-                                        self.artistsInfo[1].Listeners,
-                                        self.artistsInfo[2].Listeners
-                                    ]
+                                    data: listeners
                                 }
                             ]
                         };
@@ -101,17 +101,13 @@
                                     strokeColor: "rgba(151,187,205,0.8)",
                                     highlightFill: "rgba(151,187,205,0.75)",
                                     highlightStroke: "rgba(151,187,205,1)",
-                                    data: [
-                                        self.artistsInfo[0].Plays,
-                                        self.artistsInfo[1].Plays,
-                                        self.artistsInfo[2].Plays
-                                    ]
+                                    data: plays
                                 }
                             ]
                         };
 
-                        self.listenersChartFilled = self.listenersChart.Bar(listenersData);
-                        self.playsChartFilled = self.playsChart.Bar(playsData);
+                        self.listenersChart = self.listenersChartContext.Bar(listenersData);
+                        self.playsChart = self.playsChartContext.Bar(playsData);
                         window.dispatchEvent(new Event('resize'));
                     };
 
@@ -135,9 +131,12 @@
                                 console.log(error);
                             });
                     };
+
+                    self.addArtist = function () {
+                        self.artists.push(null);
+                    };
                 }
             ])
     </script>
-
 </body>
 </html>
