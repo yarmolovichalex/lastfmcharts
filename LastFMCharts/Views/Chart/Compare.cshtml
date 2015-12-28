@@ -11,19 +11,28 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
 </head>
-<body ng-controller="MainCtrl as ctrl">
+<body ng-controller="MainCtrl as ctrl" class="container">
 
     <form name="artistsForm" ng-submit="ctrl.submit()">
         <div ng-repeat="artist in ctrl.artists track by $index" class="form-group">
-            <label>Artist {{$index + 1}}: </label>
-            <autocomplete ng-required="true" attr-input-class="form-control" ng-model="ctrl.artists[$index]" data="ctrl.artistsSuggestions" on-type="ctrl.updateArtistsSuggestions"></autocomplete>
+            <div class="row">
+                <span class="label label-default">Artist {{$index + 1}}: </span>
+            </div>
+            <div class="row">
+                <div class="col-xs-10">
+                    <autocomplete ng-required="true" attr-input-class="form-control" ng-model="ctrl.artists[$index]" data="ctrl.artistsSuggestions" on-type="ctrl.updateArtistsSuggestions"></autocomplete>
+                </div>
+                <div class="col-xs-2">
+                    <div ng-click="ctrl.removeArtist" class="btn btn-warning">-</div>
+                </div>
+            </div>
         </div>
-        <button type="submit" ng-disabled="artistsForm.$invalid" class="btn btn-default">Submit</button>
+        <div class="row">
+            <button type="submit" ng-disabled="artistsForm.$invalid" class="btn btn-default">Submit</button>
+            <button type="button" ng-click="ctrl.addArtist()" class="btn btn-default">Add Artist</button>
+        </div>
+        
     </form>
-
-    <br />
-
-    <button ng-click="ctrl.addArtist()" class="btn btn-default">Add Artist</button>
 
     <br />
 
