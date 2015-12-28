@@ -17,7 +17,7 @@ var addCommas = function(nStr) {
     return x1 + x2;
 }
 
-var fillCharts = function (artistsInfo) {
+var initCharts = function() {
     if (listenersChart != null) {
         listenersChart.destroy();
     }
@@ -25,42 +25,50 @@ var fillCharts = function (artistsInfo) {
     if (playsChart != null) {
         playsChart.destroy();
     }
+};
 
-    var labels = [];
-    var listeners = [];
-    var plays = [];
+var fillCharts = function (artistsInfo) {
 
-    var artistsInfoLength = artistsInfo.length;
+    initCharts();
 
-    for (var i = 0; i < artistsInfoLength; i++) {
-        var artistInfo = artistsInfo[i];
-        labels.push(artistInfo.Name);
-        listeners.push(artistInfo.Listeners);
-        plays.push(artistInfo.Plays);
-    };
+    artistsInfo.sort(function(a, b) {
+        return a.Listeners < b.Listeners;
+    });
 
     var listenersData = {
-        labels: labels,
+        labels: artistsInfo.map(function(artist) {
+            return artist.Name;
+        }),
         datasets: [
             {
                 fillColor: "rgba(220,220,220,0.5)",
                 strokeColor: "rgba(220,220,220,0.8)",
                 highlightFill: "rgba(220,220,220,0.75)",
                 highlightStroke: "rgba(220,220,220,1)",
-                data: listeners
+                data: artistsInfo.map(function (artist) {
+                    return artist.Listeners;
+                })
             }
         ]
     };
 
+    artistsInfo.sort(function (a, b) {
+        return a.Plays < b.Plays;
+    });
+
     var playsData = {
-        labels: labels,
+        labels: artistsInfo.map(function (artist) {
+            return artist.Name;
+        }),
         datasets: [
             {
                 fillColor: "rgba(151,187,205,0.5)",
                 strokeColor: "rgba(151,187,205,0.8)",
                 highlightFill: "rgba(151,187,205,0.75)",
                 highlightStroke: "rgba(151,187,205,1)",
-                data: plays
+                data: artistsInfo.map(function (artist) {
+                    return artist.Plays;
+                })
             }
         ]
     };
