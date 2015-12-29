@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 using LastFMCharts.Models;
 
@@ -8,28 +9,6 @@ namespace LastFMCharts.Controllers
 {
     public class ChartController : Controller
     {
-        [HttpGet]
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Index(string artist)
-        {
-            var artistInfo = LastFM.getArtist(artist);
-
-            var model = new ArtistViewModel
-            {
-                Name = artistInfo.Name,
-                Listeners = artistInfo.Listeners,
-                Plays = artistInfo.Plays,
-                Similar = artistInfo.Similar
-            };
-
-            return View(model);
-        }
-
         [HttpGet]
         public ActionResult Compare()
         {
@@ -42,19 +21,19 @@ namespace LastFMCharts.Controllers
             try
             {
                 var model = artists
-                .Select(LastFM.getArtist)
+                .Select(LastFM.getArtistInfo)
                 .Select(result => new ArtistViewModel
                 {
                     Name = result.Name,
                     Listeners = result.Listeners,
                     Plays = result.Plays,
-                    Similar = result.Similar
                 }).ToList();
 
                 return Json(model);
             }
             catch (Exception ex)
             {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(ex.Message);
             }
         }
@@ -68,6 +47,7 @@ namespace LastFMCharts.Controllers
             }
             catch (Exception ex)
             {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(ex.Message);
             }
         }
