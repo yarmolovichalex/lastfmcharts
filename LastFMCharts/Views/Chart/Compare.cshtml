@@ -23,8 +23,8 @@
                     <autocomplete
                         ng-required="true"
                         ng-model="ctrl.artists[$index]"
-                        data="ctrl.artistsSuggestions"
-                        on-type="ctrl.updateArtistsSuggestions"
+                        data="ctrl.artistSuggestions"
+                        on-type="ctrl.updateArtistSuggestions"
                         attr-input-class="form-control"></autocomplete>
                 </div>
                 <div ng-show="ctrl.artists.length > ctrl.minArtistsNumber" class="col-xs-2">
@@ -70,11 +70,11 @@
                     self.isFailResponse = false;
                     self.failResponseMessage = null;
 
-                    self.updateArtistsSuggestions = function (userInput) {
+                    self.updateArtistSuggestions = function (userInput) {
                         if (userInput) {
                             $http.get("/api/artistsuggestions/" + userInput)
                             .then(function (response) {
-                                self.artistsSuggestions = response.data;
+                                self.artistSuggestions = response.data;
                             }, function (error) {
                                 // no need to show autocomplete errors on UI
                                 console.log(error);

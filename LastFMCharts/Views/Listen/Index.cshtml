@@ -18,8 +18,8 @@
         <span class="label label-default">Artist: </span>
         <autocomplete ng-required="true"
                       ng-model="ctrl.artist"
-                      data="ctrl.artistsSuggestions"
-                      on-type="ctrl.updateArtistsSuggestions"
+                      data="ctrl.artistSuggestions"
+                      on-type="ctrl.updateArtistSuggestions"
                       attr-input-class="form-control"></autocomplete>
     </div>
     <button type="submit" ng-disabled="artistForm.$invalid" class="btn btn-primary">Submit</button>
@@ -34,11 +34,11 @@
                     var self = this;
                     self.artist = null;
 
-                    self.updateArtistsSuggestions = function (userInput) {
+                    self.updateArtistSuggestions = function (userInput) {
                         if (userInput) {
                             $http.get("/api/artistsuggestions/" + userInput)
                             .then(function (response) {
-                                self.artistsSuggestions = response.data;
+                                self.artistSuggestions = response.data;
                             }, function (error) {
                                 // no need to show autocomplete errors on UI
                                 console.log(error);
