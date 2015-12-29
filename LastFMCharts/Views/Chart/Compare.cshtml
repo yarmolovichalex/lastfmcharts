@@ -35,8 +35,8 @@
 
     <br />
 
-    <div ng-show="ctrl.isResponseFailed" ng-cloak>
-        <p class="bg-danger">{{ctrl.responseFailMessage}}</p>
+    <div ng-show="ctrl.isFailResponse" ng-cloak>
+        <p class="bg-danger">{{ctrl.failResponseMessage}}</p>
     </div>
 
     <div ng-show="ctrl.artistsInfo.length !== 0">
@@ -62,8 +62,8 @@
                     self.artists = [null, null];
                     self.artistsInfo = [];
                     self.artistsSuggestions = [];
-                    self.isResponseFailed = false;
-                    self.responseFailMessage = null;
+                    self.isFailResponse = false;
+                    self.failResponseMessage = null;
 
                     self.updateArtistsSuggestions = function (userInput) {
                         if (userInput) {
@@ -81,11 +81,12 @@
                         self.artistsInfo = [];
                         $http.post('@Url.Action("Compare")', { artists: self.artists })
                            .then(function (response) {
+                               self.isFailResponse = false;
                                self.artistsInfo = response.data;
                                fillCharts(self.artistsInfo);
                            }, function (error) {
-                               self.isResponseFailed = true;
-                               self.responseFailMessage = error.data;
+                               self.isFailResponse = true;
+                               self.failResponseMessage = error.data;
                            });
                     };
 
