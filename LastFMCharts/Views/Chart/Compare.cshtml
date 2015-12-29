@@ -35,6 +35,10 @@
 
     <br />
 
+    <div ng-show="ctrl.isResponseFailed" ng-cloak>
+        <p class="bg-danger">{{ctrl.responseFailMessage}}</p>
+    </div>
+
     <div ng-show="ctrl.artistsInfo.length !== 0">
         <div>Listeners:</div>
         <div>
@@ -58,6 +62,8 @@
                     self.artists = [null, null];
                     self.artistsInfo = [];
                     self.artistsSuggestions = [];
+                    self.isResponseFailed = false;
+                    self.responseFailMessage = null;
 
                     self.updateArtistsSuggestions = function (userInput) {
                         if (userInput) {
@@ -65,18 +71,21 @@
                             .then(function (response) {
                                 self.artistsSuggestions = response.data;
                             }, function (error) {
+                                // no need to show autocomplete errors on UI
                                 console.log(error);
                             });
                         }
                     };
 
                     self.submit = function () {
+                        self.artistsInfo = [];
                         $http.post('@Url.Action("Compare")', { artists: self.artists })
                            .then(function (response) {
                                self.artistsInfo = response.data;
                                fillCharts(self.artistsInfo);
                            }, function (error) {
-                               console.log(error);
+                               self.isResponseFailed = true;
+                               self.responseFailMessage = error.data;
                            });
                     };
 
