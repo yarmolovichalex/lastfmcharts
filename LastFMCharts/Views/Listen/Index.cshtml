@@ -1,0 +1,28 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html ng-app="lastFMCharts">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Last FM Charts</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body ng-controller="MainCtrl as ctrl" class="container">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="~/Scripts/Compare/autocomplete.js"></script>
+    <script type="text/javascript">
+        angular.module('lastFMCharts', ['autocomplete'])
+            .controller('MainCtrl', [
+                '$http', function ($http) {
+                    var self = this;
+                }
+            ])
+    </script>
+</body>
+</html>

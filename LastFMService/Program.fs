@@ -74,6 +74,7 @@ let internal parseGetArtistSuggestionsResp response =
             for suggestionArtist in suggestionsArtistsArray do
                 yield suggestionArtist.["name"].Value<string>()
         }
+
         suggestionsArtists
 
 let getArtistInfo artist =

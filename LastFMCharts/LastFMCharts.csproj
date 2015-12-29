@@ -99,6 +99,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ChartController.cs" />
+    <Compile Include="Controllers\ListenController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -110,6 +111,7 @@
     <Content Include="packages.config" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <Content Include="Views\Chart\Compare.cshtml" />
+    <Content Include="Views\Listen\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
