@@ -33,11 +33,10 @@
                 '$http', function ($http) {
                     var self = this;
                     self.artist = null;
-                    self.artistsSuggestions = [];
 
                     self.updateArtistsSuggestions = function (userInput) {
                         if (userInput) {
-                            $http.post('@Url.Action("GetArtistsSuggestions", "Chart")', { userInput: userInput })
+                            $http.get("/api/artistsuggestions/" + userInput)
                             .then(function (response) {
                                 self.artistsSuggestions = response.data;
                             }, function (error) {

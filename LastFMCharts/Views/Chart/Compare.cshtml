@@ -66,14 +66,13 @@
                     var self = this;
                     self.artists = [null, null];
                     self.artistsInfo = [];
-                    self.artistsSuggestions = [];
                     self.minArtistsNumber = 2;
                     self.isFailResponse = false;
                     self.failResponseMessage = null;
 
                     self.updateArtistsSuggestions = function (userInput) {
                         if (userInput) {
-                            $http.post('@Url.Action("GetArtistsSuggestions")', { userInput: userInput })
+                            $http.get("/api/artistsuggestions/" + userInput)
                             .then(function (response) {
                                 self.artistsSuggestions = response.data;
                             }, function (error) {
