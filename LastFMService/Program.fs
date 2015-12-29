@@ -21,7 +21,6 @@ let internal processResponse response =
             | Binary b -> failwith "Error: not a text"
 
 let internal getArtistInfoReq artist =
-
     let response = Http.Request(
                            Settings.LastfmApi.AbsoluteUri, 
                            query = [ "format", "json";
@@ -30,25 +29,10 @@ let internal getArtistInfoReq artist =
                                      "artist", artist;
                                      "autocorrect", "1" ],
                            silentHttpErrors = true)
-
-    processResponse response
-
-let internal getArtistSuggestionsReq userInput =
-
-    let response = Http.Request(
-                           Settings.LastfmApi.AbsoluteUri, 
-                           query = [ "format", "json";
-                                     "api_key", Settings.LastfmKey;
-                                     "method", "artist.search";
-                                     "artist", userInput ],
-                           silentHttpErrors = true)
-
     processResponse response
 
 let internal parseGetArtistInfoResp response =
-    
     let response = JObject.Parse(response)
-    
     let artist = response.["artist"]
     match artist with
     | null ->
@@ -57,13 +41,20 @@ let internal parseGetArtistInfoResp response =
         let name = artist.["name"].Value<string>()
         let listeners = artist.["stats"].["listeners"].Value<int>()
         let plays = artist.["stats"].["playcount"].Value<int>()
-
         { Name = name; Listeners = listeners; Plays = plays; }
 
+let internal getArtistSuggestionsReq userInput =
+    let response = Http.Request(
+                           Settings.LastfmApi.AbsoluteUri, 
+                           query = [ "format", "json";
+                                     "api_key", Settings.LastfmKey;
+                                     "method", "artist.search";
+                                     "artist", userInput ],
+                           silentHttpErrors = true)
+    processResponse response
+    
 let internal parseGetArtistSuggestionsResp response =
-
     let response = JObject.Parse(response)
-
     let results = response.["results"]
     match results with
     | null ->
@@ -74,8 +65,33 @@ let internal parseGetArtistSuggestionsResp response =
             for suggestionArtist in suggestionsArtistsArray do
                 yield suggestionArtist.["name"].Value<string>()
         }
-
         suggestionsArtists
+
+let internal getTopTracksReq artist =
+    let response = Http.Request(
+                           Settings.LastfmApi.AbsoluteUri, 
+                           query = [ "format", "json";
+                                     "api_key", Settings.LastfmKey;
+                                     "method", "artist.getTopTracks";
+                                     "artist", artist;
+                                     "limit", "10";
+                                     "autocorrect", "1" ],
+                           silentHttpErrors = true)
+    processResponse response
+
+let internal parseGetTopTracksResp response =
+    let response = JObject.Parse(response)
+    let topTracks = response.["toptracks"]
+    match topTracks with
+    | null ->
+        failwith (response.["message"].Value<string>())
+    | topTracks ->
+        let tracksArray = topTracks.["track"].Value<JArray>()
+        let tracksNamesArray = seq {
+            for track in tracksArray do
+                yield track.["name"].Value<string>()
+        }
+        tracksNamesArray
 
 let getArtistInfo artist =
     try
@@ -88,3 +104,9 @@ let getArtistSuggestions userInput =
         getArtistSuggestionsReq userInput |> parseGetArtistSuggestionsResp
     with
     | ex -> raise(Exception("Failed to get suggestions for artist '" + userInput + "': " + ex.Message))
+
+let getTopTracks artist =
+    try
+        getTopTracksReq artist |> parseGetTopTracksResp
+    with
+    | ex -> raise(Exception("Failed to get top tracks for artist '" + artist + "': " + ex.Message))

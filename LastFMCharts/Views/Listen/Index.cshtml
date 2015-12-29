@@ -13,7 +13,7 @@
 </head>
 <body ng-controller="MainCtrl as ctrl" class="container">
 
-<form name="artistForm" ng-submit="ctrl.submit" class="form-horizontal">
+<form name="artistForm" ng-submit="ctrl.submit()" class="form-horizontal">
     <div class="form-group">
         <span class="label label-default">Artist: </span>
         <autocomplete ng-required="true"
@@ -24,6 +24,12 @@
     </div>
     <button type="submit" ng-disabled="artistForm.$invalid" class="btn btn-primary">Submit</button>
 </form>
+
+<br />
+
+<ul ng-show="ctrl.artist !== null">
+    <li ng-repeat="track in ctrl.tracks">{{track}}</li>
+</ul>
 
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="~/Scripts/Compare/autocomplete.js"></script>
@@ -44,6 +50,18 @@
                                 console.log(error);
                             });
                         }
+                    };
+
+                    self.submit = function () {
+                        self.tracks = [];
+                        $http.post('@Url.Action("Index")', { artist: self.artist })
+                           .then(function (response) {
+                               self.isFailResponse = false;
+                               self.tracks = response.data;
+                           }, function (error) {
+                               self.isFailResponse = true;
+                               self.failResponseMessage = error.data;
+                           });
                     };
                 }
             ])
