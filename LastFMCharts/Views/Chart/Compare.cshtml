@@ -4,25 +4,30 @@
 
 <!DOCTYPE html>
 
-<html ng-app="lastFMCharts">
+<html ng-app="compareApp">
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Last FM Charts</title>
+    <title>Compare number of listeners and plays of different artists</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body ng-controller="MainCtrl as ctrl" class="container">
 
-    <form name="artistsForm" ng-submit="ctrl.submit()">
+    <form name="artistsForm" ng-submit="ctrl.submit()" class="form-horizontal">
         <div ng-repeat="artist in ctrl.artists track by $index" class="form-group">
             <div class="row">
                 <span ng-cloak class="label label-default">Artist {{$index + 1}}: </span>
             </div>
             <div class="row">
                 <div class="col-xs-10">
-                    <autocomplete ng-required="true" attr-input-class="form-control" ng-model="ctrl.artists[$index]" data="ctrl.artistsSuggestions" on-type="ctrl.updateArtistsSuggestions"></autocomplete>
+                    <autocomplete
+                        ng-required="true"
+                        ng-model="ctrl.artists[$index]"
+                        data="ctrl.artistsSuggestions"
+                        on-type="ctrl.updateArtistsSuggestions"
+                        attr-input-class="form-control"></autocomplete>
                 </div>
-                <div ng-show="ctrl.artists.length > 2" class="col-xs-2">
+                <div ng-show="ctrl.artists.length > ctrl.minArtistsNumber" class="col-xs-2">
                     <div ng-click="ctrl.removeArtist($index)" class="btn btn-warning">Remove</div>
                 </div>
             </div>
@@ -55,13 +60,14 @@
     <script src="~/Scripts/Compare/autocomplete.js"></script>
     <script src="~/Scripts/Compare/chart.js"></script>
     <script type="text/javascript">
-        angular.module('lastFMCharts', ['autocomplete'])
+        angular.module('compareApp', ['autocomplete'])
             .controller('MainCtrl', [
                 '$http', function ($http) {
                     var self = this;
                     self.artists = [null, null];
                     self.artistsInfo = [];
                     self.artistsSuggestions = [];
+                    self.minArtistsNumber = 2;
                     self.isFailResponse = false;
                     self.failResponseMessage = null;
 

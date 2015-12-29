@@ -4,23 +4,48 @@
 
 <!DOCTYPE html>
 
-<html ng-app="lastFMCharts">
+<html ng-app="listenApp">
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Last FM Charts</title>
+    <title>Listen to the most popular tracks of selected artist</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body ng-controller="MainCtrl as ctrl" class="container">
 
+<form name="artistForm" ng-submit="ctrl.submit" class="form-horizontal">
+    <div class="form-group">
+        <span class="label label-default">Artist: </span>
+        <autocomplete ng-required="true"
+                      ng-model="ctrl.artist"
+                      data="ctrl.artistsSuggestions"
+                      on-type="ctrl.updateArtistsSuggestions"
+                      attr-input-class="form-control"></autocomplete>
+    </div>
+    <button type="submit" ng-disabled="artistForm.$invalid" class="btn btn-primary">Submit</button>
+</form>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="~/Scripts/Compare/autocomplete.js"></script>
     <script type="text/javascript">
-        angular.module('lastFMCharts', ['autocomplete'])
+        angular.module('listenApp', ['autocomplete'])
             .controller('MainCtrl', [
                 '$http', function ($http) {
                     var self = this;
+                    self.artist = null;
+                    self.artistsSuggestions = [];
+
+                    self.updateArtistsSuggestions = function (userInput) {
+                        if (userInput) {
+                            $http.post('@Url.Action("GetArtistsSuggestions", "Chart")', { userInput: userInput })
+                            .then(function (response) {
+                                self.artistsSuggestions = response.data;
+                            }, function (error) {
+                                // no need to show autocomplete errors on UI
+                                console.log(error);
+                            });
+                        }
+                    };
                 }
             ])
     </script>
