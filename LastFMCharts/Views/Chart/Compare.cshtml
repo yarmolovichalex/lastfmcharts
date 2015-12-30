@@ -18,7 +18,9 @@
     <form name="artistsForm" ng-submit="ctrl.submit()" class="form-horizontal">
         <div ng-repeat="artist in ctrl.artists track by $index" class="form-group">
             <div class="row">
-                <span ng-cloak class="label label-default">Artist {{$index + 1}}: </span>
+                <div class="col-xs-12">
+                    <span ng-cloak class="label label-default">Artist {{$index + 1}}: </span>
+                </div>
             </div>
             <div class="row">
                 <div class="col-xs-10">
@@ -39,8 +41,10 @@
             </div>
         </div>
         <div class="row">
-            <button type="button" ng-click="ctrl.addArtist()" class="btn btn-default">Add Artist</button>
-            <button type="submit" ng-disabled="artistsForm.$invalid" class="btn btn-primary">Submit</button>
+            <div class="col-xs-12">
+                <button type="button" ng-click="ctrl.addArtist()" class="btn btn-default">Add Artist</button>
+                <button type="submit" ng-disabled="artistsForm.$invalid" class="btn btn-primary">Submit</button>
+            </div>
         </div>
     </form>
 
