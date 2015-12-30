@@ -7,12 +7,14 @@
 <html ng-app="compareApp">
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Compare number of listeners and plays of different artists</title>
+    <title>Compare</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body ng-controller="MainCtrl as ctrl" class="container">
-
+    <div style="padding: 1rem 0.5rem; text-align: center">
+        <h4>Compare different artists by total number of listeners and total number of plays</h4>
+    </div>
     <form name="artistsForm" ng-submit="ctrl.submit()" class="form-horizontal">
         <div ng-repeat="artist in ctrl.artists track by $index" class="form-group">
             <div class="row">
@@ -20,15 +22,19 @@
             </div>
             <div class="row">
                 <div class="col-xs-10">
-                    <autocomplete
-                        ng-required="true"
-                        ng-model="ctrl.artists[$index]"
-                        data="ctrl.artistSuggestions"
-                        on-type="ctrl.updateArtistSuggestions"
-                        attr-input-class="form-control"></autocomplete>
+                    <autocomplete ng-required="true"
+                                  ng-model="ctrl.artists[$index]"
+                                  data="ctrl.artistSuggestions"
+                                  on-type="ctrl.updateArtistSuggestions"
+                                  attr-input-class="form-control"></autocomplete>
                 </div>
-                <div ng-show="ctrl.artists.length > ctrl.minArtistsNumber" class="col-xs-2">
-                    <div ng-click="ctrl.removeArtist($index)" class="btn btn-warning">Remove</div>
+                <div class="col-xs-2">
+                    <button type="button"
+                            ng-disabled="ctrl.artists.length <= ctrl.minArtistsNumber"
+                            ng-click="ctrl.removeArtist($index)"
+                            class="btn btn-warning">
+                        Remove
+                    </button>
                 </div>
             </div>
         </div>
@@ -73,26 +79,26 @@
                     self.updateArtistSuggestions = function (userInput) {
                         if (userInput) {
                             $http.get("/api/artistsuggestions/" + userInput)
-                            .then(function (response) {
-                                self.artistSuggestions = response.data;
-                            }, function (error) {
-                                // no need to show autocomplete errors on UI
-                                console.log(error);
-                            });
+                                .then(function (response) {
+                                    self.artistSuggestions = response.data;
+                                }, function (error) {
+                                    // no need to show autocomplete errors on UI
+                                    console.log(error);
+                                });
                         }
                     };
 
                     self.submit = function () {
                         self.artistsInfo = [];
                         $http.post('@Url.Action("Compare")', { artists: self.artists })
-                           .then(function (response) {
-                               self.isFailResponse = false;
-                               self.artistsInfo = response.data;
-                               fillCharts(self.artistsInfo);
-                           }, function (error) {
-                               self.isFailResponse = true;
-                               self.failResponseMessage = error.data;
-                           });
+                            .then(function (response) {
+                                self.isFailResponse = false;
+                                self.artistsInfo = response.data;
+                                fillCharts(self.artistsInfo);
+                            }, function (error) {
+                                self.isFailResponse = true;
+                                self.failResponseMessage = error.data;
+                            });
                     };
 
                     self.addArtist = function () {
