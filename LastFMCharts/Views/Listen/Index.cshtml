@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Configuration
+@{
     Layout = null;
 }
 
@@ -51,7 +52,10 @@
                     var self = this;
 
                     if (!window.location.hash) {
-                        window.location = 'https://oauth.vk.com/authorize?client_id=4746712&display=page&redirect_uri=http://lastfmcharts/listen&scope=audio&response_type=token&v=5.42';
+                        var url = "https://oauth.vk.com/authorize?client_id=4746712&display=page&redirect_uri="
+                            + '@ConfigurationManager.AppSettings["listenRedirectUrl"]'
+                            + "&scope=audio&response_type=token&v=5.42";
+                        window.location = url;
                     }
                     self.token = window.location.hash.substr(1).split('&')[0].split('=')[1];
                     //history.replaceState({}, document.title, "/");
