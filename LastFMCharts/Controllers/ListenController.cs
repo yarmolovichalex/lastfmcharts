@@ -20,20 +20,26 @@ namespace LastFMCharts.Controllers
         {
             try
             {
-                // TODO find out, why more than 5 simultaneous requests cause error. this is temporary solution
-                var topTracksNames = LastFM.getTopTracksNames(artist).Take(5);
+                var topTracksNames = LastFM.getTopTracksNames(artist);
                 var tracks = topTracksNames.Select(trackName =>
                 {
                     var fullTrackName = $"{artist} - {trackName}";
 
-                    var url = VK.getTrackUrl(fullTrackName, token);
-
-                    return new TrackViewModel
+                    // ignore failed requests (temporary solution)
+                    try
                     {
-                        Name = trackName,
-                        Url = url
-                    };
-                }).ToList();
+                        var url = VK.getTrackUrl(fullTrackName, token);
+                        return new TrackViewModel
+                        {
+                            Name = trackName,
+                            Url = url
+                        };
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }).ToList().Where(track => track != null);
 
                 return Json(tracks);
             }
