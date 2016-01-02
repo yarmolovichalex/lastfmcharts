@@ -20,7 +20,8 @@ namespace LastFMCharts.Controllers
         {
             try
             {
-                var topTracksNames = LastFM.getTopTracksNames(artist);
+                // TODO find out, why more than 5 simultaneous requests cause error. this is temporary solution
+                var topTracksNames = LastFM.getTopTracksNames(artist).Take(5);
                 var tracks = topTracksNames.Select(trackName =>
                 {
                     var fullTrackName = $"{artist} - {trackName}";
