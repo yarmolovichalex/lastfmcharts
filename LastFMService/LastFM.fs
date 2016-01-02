@@ -67,19 +67,19 @@ let internal parseGetArtistSuggestionsResp response =
         }
         suggestionsArtists
 
-let internal getTopTracksReq artist =
+let internal getTopTracksNamesReq artist =
     let response = Http.Request(
                            Settings.LastfmApi.AbsoluteUri, 
                            query = [ "format", "json";
                                      "api_key", Settings.LastfmKey;
                                      "method", "artist.getTopTracks";
                                      "artist", artist;
-                                     "limit", "10";
+                                     "limit", Settings.TopTracksLimit.ToString();
                                      "autocorrect", "1" ],
                            silentHttpErrors = true)
     processResponse response
 
-let internal parseGetTopTracksResp response =
+let internal parseGetTopTracksNamesResp response =
     let response = JObject.Parse(response)
     let topTracks = response.["toptracks"]
     match topTracks with
@@ -105,8 +105,8 @@ let getArtistSuggestions userInput =
     with
     | ex -> raise(Exception("Failed to get suggestions for artist '" + userInput + "': " + ex.Message))
 
-let getTopTracks artist =
+let getTopTracksNames artist =
     try
-        getTopTracksReq artist |> parseGetTopTracksResp
+        getTopTracksNamesReq artist |> parseGetTopTracksNamesResp
     with
     | ex -> raise(Exception("Failed to get top tracks for artist '" + artist + "': " + ex.Message))

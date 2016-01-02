@@ -7,37 +7,55 @@
 <html ng-app="listenApp">
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Listen to the most popular tracks of selected artist</title>
+    <title>Listen</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body ng-controller="MainCtrl as ctrl" class="container">
 
-<form name="artistForm" ng-submit="ctrl.submit()" class="form-horizontal">
-    <div class="form-group">
-        <span class="label label-default">Artist: </span>
-        <autocomplete ng-required="true"
-                      ng-model="ctrl.artist"
-                      data="ctrl.artistSuggestions"
-                      on-type="ctrl.updateArtistSuggestions"
-                      attr-input-class="form-control"></autocomplete>
+    <div style="padding: 1rem 0.5rem; text-align: center">
+        <h4>Listen to the most popular tracks of selected artist</h4>
     </div>
-    <button type="submit" ng-disabled="artistForm.$invalid" class="btn btn-primary">Submit</button>
-</form>
 
-<br />
+    <form name="artistForm" ng-submit="ctrl.submit()" class="form-horizontal">
+        <div class="form-group">
+            <span class="label label-default">Artist: </span>
+            <autocomplete ng-required="true"
+                          ng-model="ctrl.artist"
+                          data="ctrl.artistSuggestions"
+                          on-type="ctrl.updateArtistSuggestions"
+                          attr-input-class="form-control"></autocomplete>
+        </div>
+        <button type="submit" ng-disabled="artistForm.$invalid" class="btn btn-primary">Submit</button>
+    </form>
 
-<ul ng-show="ctrl.artist !== null">
-    <li ng-repeat="track in ctrl.tracks">{{track}}</li>
-</ul>
+    <br />
 
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <table ng-show="ctrl.artist !== null" class="table">
+        <tr ng-repeat="track in ctrl.tracks">
+            <td>
+                <p>{{track.Name}}</p>
+            </td>
+            <td>
+                <audio controls preload="none" ng-src="{{ctrl.updateSrc(track.Url)}}"></audio>
+            </td>
+        </tr>
+    </table>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="~/Scripts/Compare/autocomplete.js"></script>
     <script type="text/javascript">
         angular.module('listenApp', ['autocomplete'])
             .controller('MainCtrl', [
-                '$http', function ($http) {
+                '$http', '$sce', function ($http, $sce) {
                     var self = this;
+
+                    if (!window.location.hash) {
+                        window.location = 'https://oauth.vk.com/authorize?client_id=4746712&display=page&redirect_uri=http://lastfmcharts/listen&scope=audio&response_type=token&v=5.42';
+                    }
+                    self.token = window.location.hash.substr(1).split('&')[0].split('=')[1];
+                    //history.replaceState({}, document.title, "/");
+
                     self.artist = null;
 
                     self.updateArtistSuggestions = function (userInput) {
@@ -52,9 +70,13 @@
                         }
                     };
 
+                    self.updateSrc = function (src) {
+                        return $sce.trustAsResourceUrl(src);
+                    };
+
                     self.submit = function () {
                         self.tracks = [];
-                        $http.post('@Url.Action("Index")', { artist: self.artist })
+                        $http.post('@Url.Action("Index")', { artist: self.artist, token: self.token })
                            .then(function (response) {
                                self.isFailResponse = false;
                                self.tracks = response.data;

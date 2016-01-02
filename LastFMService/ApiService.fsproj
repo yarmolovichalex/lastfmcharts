@@ -8,11 +8,11 @@
     <ProjectGuid>4d5fe624-1a90-4754-8f7a-15b594508a77</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>LastFMService</RootNamespace>
-    <AssemblyName>LastFMService</AssemblyName>
+    <AssemblyName>ApiService</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
-    <Name>LastFMService</Name>
+    <Name>ApiService</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,9 +55,10 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Program.fs" />
     <None Include="App.config" />
     <Content Include="packages.config" />
+    <Compile Include="LastFM.fs" />
+    <Compile Include="VK.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Configuration">

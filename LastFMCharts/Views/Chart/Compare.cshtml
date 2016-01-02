@@ -12,9 +12,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body ng-controller="MainCtrl as ctrl" class="container">
+
     <div style="padding: 1rem 0.5rem; text-align: center">
         <h4>Compare different artists by total number of listeners and total number of plays</h4>
     </div>
+
     <form name="artistsForm" ng-submit="ctrl.submit()" class="form-horizontal">
         <div ng-repeat="artist in ctrl.artists track by $index" class="form-group">
             <div class="row">

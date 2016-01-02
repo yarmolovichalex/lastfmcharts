@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Web.Mvc;
+using LastFMCharts.Models;
 
 namespace LastFMCharts.Controllers
 {
@@ -13,11 +16,28 @@ namespace LastFMCharts.Controllers
         }
 
         [HttpPost]
-        public JsonResult Index(string artist)
+        public JsonResult Index(string artist, string token)
         {
             try
             {
-                return Json(LastFM.getTopTracks(artist));
+                var topTracksNames = LastFM.getTopTracksNames(artist);
+                var tracks = topTracksNames.Select(trackName =>
+                {
+                    var fullTrackName = $"{artist} - {trackName}";
+
+                    var url = VK.getTrackUrl(fullTrackName, token);
+
+                    // TODO find out, why 10 simultaneous requests cause error. this is temporary solution
+                    Thread.Sleep(500);
+
+                    return new TrackViewModel
+                    {
+                        Name = trackName,
+                        Url = url
+                    };
+                }).ToList();
+
+                return Json(tracks);
             }
             catch (Exception ex)
             {

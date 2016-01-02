@@ -123,6 +123,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ArtistViewModel.cs" />
+    <Compile Include="Models\TrackViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -142,9 +143,9 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LastFMService\LastFMService.fsproj">
+    <ProjectReference Include="..\LastFMService\ApiService.fsproj">
       <Project>{4d5fe624-1a90-4754-8f7a-15b594508a77}</Project>
-      <Name>LastFMService</Name>
+      <Name>ApiService</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -10,6 +10,7 @@ namespace LastFMCharts.Controllers
         {
             try
             {
+                // todo move 5 to config
                 return Ok(LastFM.getArtistSuggestions(userInput).Take(5));
             }
             catch (Exception ex)
