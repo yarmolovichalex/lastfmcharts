@@ -19,6 +19,10 @@ let internal processResponse response =
             | Binary b -> failwith "Error: not a text"
 
 let internal getTrackUrlReq name token =
+
+    // TODO find out, why 10 simultaneous requests cause error. this is temporary solution
+    System.Threading.Thread.Sleep(500);
+
     let response = Http.Request(
                            Settings.VkAudioSearch.AbsoluteUri, 
                            query = [ "q", name;

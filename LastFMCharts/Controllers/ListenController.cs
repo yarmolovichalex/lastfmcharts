@@ -27,9 +27,6 @@ namespace LastFMCharts.Controllers
 
                     var url = VK.getTrackUrl(fullTrackName, token);
 
-                    // TODO find out, why 10 simultaneous requests cause error. this is temporary solution
-                    Thread.Sleep(500);
-
                     return new TrackViewModel
                     {
                         Name = trackName,
