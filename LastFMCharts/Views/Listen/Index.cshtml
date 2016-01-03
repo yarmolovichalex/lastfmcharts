@@ -17,7 +17,7 @@
 
     <script language="javascript">
         VK.init({
-            apiId: 4746712
+            apiId: 4746712 // todo move to config
         });
         //function authInfo(response) {
         //    if (response.session) {
@@ -78,12 +78,12 @@
                     self.updateArtistSuggestions = function (userInput) {
                         if (userInput) {
                             $http.get("/api/artistsuggestions/" + userInput)
-                            .then(function (response) {
-                                self.artistSuggestions = response.data;
-                            }, function (error) {
-                                // no need to show autocomplete errors on UI
-                                console.log(error);
-                            });
+                                .then(function (response) {
+                                    self.artistSuggestions = response.data;
+                                }, function (error) {
+                                    // no need to show autocomplete errors on UI
+                                    console.log(error);
+                                });
                         }
                     };
 
@@ -91,7 +91,7 @@
                         return $sce.trustAsResourceUrl(src);
                     };
 
-                    self.populateTrackWithUrl = function(trackName) {
+                    self.populateTrackWithUrl = function (trackName) {
                         var fullTrackName = self.artist + " - " + trackName;
                         VK.Api.call('audio.search', { q: fullTrackName }, function (response) {
                             console.log(response);
@@ -105,26 +105,35 @@
                     self.submit = function () {
                         self.tracks = [];
                         $http.get('/api/toptracks/' + self.artist)
-                           .then(function (response) {
-                               console.log(response.data);
+                            .then(function (response) {
+                                console.log(response.data);
 
-                               var time = 500;
+                                var time = 500;
 
-                               response.data.forEach(function (trackName, i, arr) {
-                                   $timeout(function () {
-                                       self.populateTrackWithUrl(trackName);
-                                   }, time);
-                                   time += 500;
-                               });
+                                response.data.forEach(function (trackName, i, arr) {
+                                    $timeout(function () {
+                                        self.populateTrackWithUrl(trackName);
+                                    }, time);
+                                    time += 500;
+                                });
 
-                               self.isFailResponse = false;
-                           }, function (error) {
-                               self.isFailResponse = true;
-                               self.failResponseMessage = error.data;
-                           });
+                                self.isFailResponse = false;
+                            }, function (error) {
+                                self.isFailResponse = true;
+                                self.failResponseMessage = error.data;
+                            });
                     };
                 }
-            ])
+            ]);
+
+        document.addEventListener('play', function (e) {
+            var audios = document.getElementsByTagName('audio');
+            for (var i = 0, len = audios.length; i < len; i++) {
+                if (audios[i] !== e.target) {
+                    audios[i].pause();
+                }
+            }
+        }, true);
     </script>
 </body>
 </html>
