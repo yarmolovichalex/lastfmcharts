@@ -58,7 +58,6 @@
     <None Include="App.config" />
     <Content Include="packages.config" />
     <Compile Include="LastFM.fs" />
-    <Compile Include="VK.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Configuration">

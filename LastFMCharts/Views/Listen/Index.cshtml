@@ -10,25 +10,6 @@
     <title>Listen</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
-
-    <script src="//vk.com/js/api/openapi.js" type="text/javascript"></script>
-
-    @*<div id="login_button" onclick="VK.Auth.login(authInfo);"></div>*@
-
-    <script language="javascript">
-        VK.init({
-            apiId: 4746712 // todo move to config
-        });
-        //function authInfo(response) {
-        //    if (response.session) {
-        //        alert('user: ' + response.session.mid);
-        //    } else {
-        //        alert('not auth');
-        //    }
-        //}
-        //VK.Auth.getLoginStatus(authInfo);
-        //VK.UI.button('login_button');
-    </script>
 </head>
 <body ng-controller="MainCtrl as ctrl" class="container">
 
@@ -67,7 +48,12 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="~/Scripts/Compare/autocomplete.js"></script>
+    <script src="//vk.com/js/api/openapi.js" type="text/javascript"></script>
     <script type="text/javascript">
+        VK.init({
+            apiId: 4746712 // todo move to config
+        });
+
         angular.module('listenApp', ['autocomplete'])
             .controller('MainCtrl', [
                 '$http', '$sce', '$timeout', function ($http, $sce, $timeout) {
@@ -108,13 +94,12 @@
                             .then(function (response) {
                                 console.log(response.data);
 
-                                var time = 500;
-
+                                var time = 0;
                                 response.data.forEach(function (trackName, i, arr) {
                                     $timeout(function () {
                                         self.populateTrackWithUrl(trackName);
                                     }, time);
-                                    time += 500;
+                                    time += 400;
                                 });
 
                                 self.isFailResponse = false;
