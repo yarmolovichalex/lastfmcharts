@@ -36,5 +36,8 @@ let internal parseGetTrackUrlResp response =
         tracks.[1].["url"].Value<string>()
 
 let getTrackUrl name token =
-    getTrackUrlReq name token |> parseGetTrackUrlResp
+    getTrackUrlReq name token
+
+//let getTrackUrl name token =
+//    getTrackUrlReq name token |> parseGetTrackUrlResp
     
