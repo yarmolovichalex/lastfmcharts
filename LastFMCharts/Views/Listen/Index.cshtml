@@ -1,5 +1,4 @@
-﻿@using System.Configuration
-@{
+﻿@{
     Layout = null;
 }
 
@@ -51,6 +50,10 @@
 
     <br />
 
+    <div ng-show="ctrl.isFailResponse" ng-cloak>
+        <p class="bg-danger">{{ctrl.failResponseMessage}}</p>
+    </div>
+
     <table ng-show="ctrl.artist !== null" class="table">
         <tr ng-repeat="track in ctrl.tracks">
             <td>
@@ -58,7 +61,6 @@
             </td>
             <td>
                 <audio controls preload="none" ng-src="{{ctrl.updateSrc(track.url)}}"></audio>
-                @*<p>{{track.url}}</p>*@
             </td>
         </tr>
     </table>
@@ -68,17 +70,8 @@
     <script type="text/javascript">
         angular.module('listenApp', ['autocomplete'])
             .controller('MainCtrl', [
-                '$http', '$sce', function ($http, $sce) {
+                '$http', '$sce', '$timeout', function ($http, $sce, $timeout) {
                     var self = this;
-
-                    @*if (!window.location.hash) {
-                        var url = "https://oauth.vk.com/authorize?client_id=4746712&display=page&redirect_uri="
-                            + '@ConfigurationManager.AppSettings["listenRedirectUrl"]'
-                            + "&scope=audio&response_type=token&v=5.42";
-                        window.location = url;
-                    }
-                    self.token = window.location.hash.substr(1).split('&')[0].split('=')[1];*@
-                    //history.replaceState({}, document.title, "/");
 
                     self.artist = null;
 
@@ -98,24 +91,37 @@
                         return $sce.trustAsResourceUrl(src);
                     };
 
-                    @*self.submit = function () {
+                    self.populateTrackWithUrl = function(trackName) {
+                        var fullTrackName = self.artist + " - " + trackName;
+                        VK.Api.call('audio.search', { q: fullTrackName }, function (response) {
+                            console.log(response);
+                            if (response.response) {
+                                var track = response.response[1];
+                                self.tracks.push({ name: trackName, url: track["url"] });
+                            }
+                        });
+                    };
+
+                    self.submit = function () {
                         self.tracks = [];
-                        $http.post('@Url.Action("Index")', { artist: self.artist, token: self.token })
+                        $http.get('/api/toptracks/' + self.artist)
                            .then(function (response) {
+                               console.log(response.data);
+
+                               var time = 500;
+
+                               response.data.forEach(function (trackName, i, arr) {
+                                   $timeout(function () {
+                                       self.populateTrackWithUrl(trackName);
+                                   }, time);
+                                   time += 500;
+                               });
+
                                self.isFailResponse = false;
-                               self.tracks = response.data;
                            }, function (error) {
                                self.isFailResponse = true;
                                self.failResponseMessage = error.data;
                            });
-                    };*@
-
-                    self.submit = function () {
-                        VK.Api.call('audio.search', { q: self.artist }, function (r) {
-                            if (r.response) {
-                                self.tracks = [{ name: r.response[1]["title"], url: r.response[1]["url"] }];
-                            }
-                        });
                     };
                 }
             ])

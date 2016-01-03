@@ -13,15 +13,9 @@ namespace LastFMCharts
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-                name: "ArtistSuggestions",
-                routeTemplate: "api/artistsuggestions/{userInput}",
-                defaults: new { controller = "ArtistSuggestions" }
-            );
-
-            config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                routeTemplate: "api/{controller}/{input}",
+                defaults: new { input = RouteParameter.Optional }
             );
         }
     }

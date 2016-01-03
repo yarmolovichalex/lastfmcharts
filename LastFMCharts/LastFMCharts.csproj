@@ -116,6 +116,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\TopTracksController.cs" />
     <Compile Include="Controllers\ChartController.cs" />
     <Compile Include="Controllers\ArtistSuggestionsController.cs" />
     <Compile Include="Controllers\ListenController.cs" />

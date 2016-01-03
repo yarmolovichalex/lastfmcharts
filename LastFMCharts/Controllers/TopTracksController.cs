@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Http;
 
 namespace LastFMCharts.Controllers
 {
-    public class ArtistSuggestionsController : ApiController
+    public class TopTracksController : ApiController
     {
         public IHttpActionResult Get(string input)
         {
             try
             {
-                // todo move 5 to config
-                return Ok(LastFM.getArtistSuggestions(input).Take(5));
+                return Ok(LastFM.getTopTracksNames(input));
             }
             catch (Exception ex)
             {
