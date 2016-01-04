@@ -111,6 +111,7 @@
                             if (response.response) {
                                 var track = response.response[1];
                                 self.tracks.push({ name: trackName, url: track["url"] });
+                                $scope.$apply();
                             }
                         });
                     };
@@ -121,16 +122,12 @@
                             .then(function (response) {
                                 console.log(response.data);
 
-                                var time = 0;
-                                response.data.forEach(function (trackName, i, arr) {
+                                response.data.forEach(function (trackName, index) {
                                     $timeout(function () {
                                         self.populateTrackWithUrl(trackName);
-                                    }, time);
-                                    time += 400;
+                                    }, index * 400);
                                 });
-
                                 self.isFailResponse = false;
-
                             }, function (error) {
                                 self.isFailResponse = true;
                                 self.failResponseMessage = error.data;
