@@ -129,6 +129,15 @@
                 }
             }
         }, true);
+
+        document.addEventListener('ended', function (e) {
+            var audios = document.getElementsByTagName('audio');
+            for (var i = 0, len = audios.length; i < len; i++) {
+                if (audios[i] === e.target && audios[i + 1] !== undefined) {
+                    audios[i + 1].play();
+                }
+            }
+        }, true);
     </script>
 </body>
 </html>
