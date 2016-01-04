@@ -12,6 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body ng-controller="MainCtrl as ctrl" class="container">
+    <div id="login_button" onclick="VK.Auth.login(authInfo);"></div>
 
     <div style="padding: 1rem 0.5rem; text-align: center">
         <h4>Listen to the most popular tracks of selected artist</h4>
@@ -53,6 +54,15 @@
         VK.init({
             apiId: 4746712 // todo move to config
         });
+        function authInfo(response) {
+            if (response.session) {
+                console.log('user: ' + response.session.mid);
+            } else {
+                console.log('not auth');
+            }
+        }
+        VK.Auth.getLoginStatus(authInfo);
+        VK.UI.button('login_button');
 
         angular.module('listenApp', ['autocomplete'])
             .controller('MainCtrl', [
