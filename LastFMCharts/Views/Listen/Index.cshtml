@@ -12,62 +12,79 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body ng-controller="MainCtrl as ctrl" class="container">
-    <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>
 
     <div style="padding: 1rem 0.5rem; text-align: center">
         <h4>Listen to the most popular tracks of selected artist</h4>
     </div>
 
-    <form name="artistForm" ng-submit="ctrl.submit()" class="form-horizontal">
-        <div class="form-group">
-            <span class="label label-default">Artist: </span>
-            <autocomplete ng-required="true"
-                          ng-model="ctrl.artist"
-                          data="ctrl.artistSuggestions"
-                          on-type="ctrl.updateArtistSuggestions"
-                          attr-input-class="form-control"></autocomplete>
-        </div>
-        <button type="submit" ng-disabled="artistForm.$invalid" class="btn btn-primary">Submit</button>
-    </form>
-
-    <br />
-
-    <div ng-show="ctrl.isFailResponse" ng-cloak>
-        <p class="bg-danger">{{ctrl.failResponseMessage}}</p>
+    <div ng-show="!ctrl.isAuthVk">
+        <div id="login_button" ng-click="ctrl.loginVk()"></div>
     </div>
 
-    <table ng-show="ctrl.artist !== null" class="table">
-        <tr ng-repeat="track in ctrl.tracks">
-            <td>
-                <p>{{track.name}}</p>
-            </td>
-            <td>
-                <audio controls preload="none" ng-src="{{ctrl.updateSrc(track.url)}}"></audio>
-            </td>
-        </tr>
-    </table>
+    <div ng-show="ctrl.isAuthVk">
+        <form name="artistForm" ng-submit="ctrl.submit()" class="form-horizontal">
+            <div class="form-group">
+                <span class="label label-default">Artist: </span>
+                <autocomplete ng-required="true"
+                              ng-model="ctrl.artist"
+                              data="ctrl.artistSuggestions"
+                              on-type="ctrl.updateArtistSuggestions"
+                              attr-input-class="form-control"></autocomplete>
+            </div>
+            <button type="submit" ng-disabled="artistForm.$invalid" class="btn btn-primary">Submit</button>
+        </form>
+
+        <br />
+
+        <div ng-show="ctrl.isFailResponse" ng-cloak>
+            <p class="bg-danger">{{ctrl.failResponseMessage}}</p>
+        </div>
+
+        <table ng-show="ctrl.artist !== null" class="table">
+            <tr ng-repeat="track in ctrl.tracks">
+                <td>
+                    <p>{{track.name}}</p>
+                </td>
+                <td>
+                    <audio controls preload="none" ng-src="{{ctrl.updateSrc(track.url)}}"></audio>
+                </td>
+            </tr>
+        </table>
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="~/Scripts/Compare/autocomplete.js"></script>
     <script src="//vk.com/js/api/openapi.js" type="text/javascript"></script>
     <script type="text/javascript">
+
         VK.init({
             apiId: 4746712 // todo move to config
         });
-        function authInfo(response) {
-            if (response.session) {
-                console.log('user: ' + response.session.mid);
-            } else {
-                console.log('not auth');
-            }
-        }
-        VK.Auth.getLoginStatus(authInfo);
         VK.UI.button('login_button');
 
         angular.module('listenApp', ['autocomplete'])
             .controller('MainCtrl', [
-                '$http', '$sce', '$timeout', function ($http, $sce, $timeout) {
+                '$http', '$sce', '$timeout', '$scope', function ($http, $sce, $timeout, $scope) {
                     var self = this;
+
+                    self.isAuthVk = false;
+
+                    self.authVk = function (response) {
+                        if (response.session) {
+                            self.isAuthVk = true;
+                            $scope.$apply();
+                        } else {
+                            self.isAuthVk = false;
+                        }
+
+                        console.log("isAuthVk: " + self.isAuthVk);
+                    }
+
+                    VK.Auth.getLoginStatus(self.authVk);
+
+                    self.loginVk = function () {
+                        VK.Auth.login(self.authVk, 8);
+                    };
 
                     self.artist = null;
 
@@ -113,6 +130,7 @@
                                 });
 
                                 self.isFailResponse = false;
+
                             }, function (error) {
                                 self.isFailResponse = true;
                                 self.failResponseMessage = error.data;
