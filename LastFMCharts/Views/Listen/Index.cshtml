@@ -69,16 +69,15 @@
 
                     self.isAuthVk = false;
 
-                    self.authVk = function(response) {
-                        if (response.session) {
-                            self.isAuthVk = true;
-                        } else {
-                            self.isAuthVk = false;
-                        }
-
-                        console.log("isAuthVk: " + self.isAuthVk);
-
-                        $scope.$apply();
+                    self.authVk = function (response) {
+                        $timeout(function() {
+                            if (response.session) {
+                                self.isAuthVk = true;
+                            } else {
+                                self.isAuthVk = false;
+                            }
+                            console.log("isAuthVk: " + self.isAuthVk);
+                        });
                     };
 
                     VK.Auth.getLoginStatus(self.authVk);
