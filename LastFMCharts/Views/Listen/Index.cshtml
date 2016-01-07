@@ -48,6 +48,9 @@
         <table ng-show="ctrl.artist !== null" class="table">
             <tr ng-repeat="track in ctrl.tracks">
                 <td>
+                    {{$index + 1}}
+                </td>
+                <td>
                     <p>{{track.name}}</p>
                 </td>
                 <td>
