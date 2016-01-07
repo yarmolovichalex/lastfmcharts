@@ -58,7 +58,7 @@
                     <audio controls preload="none" ng-src="{{track.url}}"></audio>
                 </td>
                 <td>
-                    <a target="_self" href="{{track.url}}" download="{{track.name}}" class="btn btn-primary-outline" role="button">
+                    <a target="_self" href="{{track.url}}" download="{{track.fileName}}" class="btn btn-primary-outline" role="button">
                         <i class="fa fa-download"></i>
                     </a>
                 </td>
@@ -66,7 +66,7 @@
             <tr>
                 <td colspan="4">
                     <div class="row">
-                         @*todo remove hardcode*@
+                        @*todo remove hardcode*@
                         <button type="button" ng-disabled="ctrl.page === 1" ng-click="ctrl.previousPage()" class="btn btn-primary">Previous</button>
                         <button type="button" ng-disabled="ctrl.page === 10" ng-click="ctrl.nextPage()" class="btn btn-primary">Next</button>
                     </div>
@@ -93,7 +93,7 @@
                     self.isAuthVk = false;
 
                     self.authVk = function (response) {
-                        $timeout(function() {
+                        $timeout(function () {
                             if (response.session) {
                                 self.isAuthVk = true;
                             } else {
@@ -128,13 +128,17 @@
                         return $sce.trustAsResourceUrl(src);
                     };
 
-                    self.populateTrackWithUrl = function (trackName) {
+                    self.createTrack = function (trackName) {
                         var fullTrackName = self.artist + " - " + trackName;
                         VK.Api.call('audio.search', { q: fullTrackName }, function (response) {
                             console.log(response);
                             if (response.response) {
                                 var track = response.response[1];
-                                self.tracks.push({ name: trackName, url: self.updateSrc(track["url"]) });
+                                self.tracks.push({
+                                    name: trackName,
+                                    url: self.updateSrc(track["url"]),
+                                    fileName: self.artist + " - " + trackName + ".mp3"
+                                });
                                 $scope.$apply();
                             }
                         });
@@ -143,7 +147,7 @@
                     self.page = 1;
                     self.tracksOnPage = 5; // todo remove hardcode
 
-                    self.previousPage = function() {
+                    self.previousPage = function () {
                         self.page--;
                         self.submit();
                     };
@@ -160,7 +164,7 @@
                                 console.log(response.data);
                                 response.data.forEach(function (trackName, index) {
                                     $timeout(function () {
-                                        self.populateTrackWithUrl(trackName);
+                                        self.createTrack(trackName);
                                     }, index * 400);
                                 });
                                 self.isFailResponse = false;
