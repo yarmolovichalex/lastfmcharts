@@ -10,8 +10,13 @@
     <title>Listen</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/allmighty-autocomplete/1.0.140706/autocomplete.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        [ng\:cloak], [ng-cloak], .ng-cloak {
+            display: none !important;
+        }
+    </style>
 </head>
-<body ng-controller="MainCtrl as ctrl" class="container">
+<body ng-controller="MainCtrl as ctrl" class="container" ng-cloak>
 
     <div style="padding: 1rem 0.5rem; text-align: center">
         <h4>Listen to the most popular tracks of selected artist</h4>
@@ -36,7 +41,7 @@
 
         <br />
 
-        <div ng-show="ctrl.isFailResponse" ng-cloak>
+        <div ng-show="ctrl.isFailResponse">
             <p class="bg-danger">{{ctrl.failResponseMessage}}</p>
         </div>
 
