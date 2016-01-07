@@ -28,7 +28,7 @@
     </div>
 
     <div ng-show="ctrl.isAuthVk">
-        <form name="artistForm" ng-submit="ctrl.submit()" class="form-horizontal">
+        <form name="artistForm" ng-submit="ctrl.submit(1)" class="form-horizontal">
             <div class="form-group">
                 <span class="label label-default">Artist: </span>
                 <autocomplete ng-required="true"
@@ -49,7 +49,7 @@
         <table ng-show="ctrl.tracks.length" class="table">
             <tr ng-repeat="track in ctrl.tracks">
                 <td>
-                    {{$index + 1}}
+                    {{(ctrl.tracksOnPage * (ctrl.page - 1)) + $index + 1}}
                 </td>
                 <td>
                     <p>{{track.name}}</p>
@@ -66,8 +66,9 @@
             <tr>
                 <td colspan="4">
                     <div class="row">
-                        <button type="button" ng-click="ctrl.previousPage()" class="btn btn-primary">Previous</button>
-                        <button type="button" ng-click="ctrl.nextPage()" class="btn btn-primary">Next</button>
+                         @*todo remove hardcode*@
+                        <button type="button" ng-disabled="ctrl.page === 1" ng-click="ctrl.previousPage()" class="btn btn-primary">Previous</button>
+                        <button type="button" ng-disabled="ctrl.page === 10" ng-click="ctrl.nextPage()" class="btn btn-primary">Next</button>
                     </div>
                 </td>
             </tr>
@@ -105,7 +106,8 @@
                     VK.Auth.getLoginStatus(self.authVk);
 
                     self.loginVk = function () {
-                        VK.Auth.login(self.authVk, 8);
+                        var requiredAppRights = 8;
+                        VK.Auth.login(self.authVk, requiredAppRights);
                     };
 
                     self.artist = null;
@@ -138,12 +140,24 @@
                         });
                     };
 
+                    self.page = 1;
+                    self.tracksOnPage = 5; // todo remove hardcode
+
+                    self.previousPage = function() {
+                        self.page--;
+                        self.submit();
+                    };
+
+                    self.nextPage = function () {
+                        self.page++;
+                        self.submit();
+                    };
+
                     self.submit = function () {
                         self.tracks = [];
-                        $http.get('/api/toptracks/' + self.artist)
+                        $http.get('/api/toptracks/' + self.artist + "?page=" + self.page)
                             .then(function (response) {
                                 console.log(response.data);
-
                                 response.data.forEach(function (trackName, index) {
                                     $timeout(function () {
                                         self.populateTrackWithUrl(trackName);

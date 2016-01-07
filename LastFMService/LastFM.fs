@@ -74,7 +74,6 @@ let internal getTopTracksNamesReq artist =
                                      "api_key", Settings.LastfmKey;
                                      "method", "artist.getTopTracks";
                                      "artist", artist;
-                                     "limit", Settings.TopTracksLimit.ToString();
                                      "autocorrect", "1" ],
                            silentHttpErrors = true)
     processResponse response
