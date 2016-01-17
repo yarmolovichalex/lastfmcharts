@@ -144,6 +144,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DB\DB.csproj">
+      <Project>{d0ce6f97-5056-4bf5-bba7-ea7c520c0e6c}</Project>
+      <Name>DB</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LastFMService\ApiService.fsproj">
       <Project>{4d5fe624-1a90-4754-8f7a-15b594508a77}</Project>
       <Name>ApiService</Name>

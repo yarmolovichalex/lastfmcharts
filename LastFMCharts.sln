@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LastFMCharts", "LastFMChart
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ApiService", "LastFMService\ApiService.fsproj", "{4D5FE624-1A90-4754-8F7A-15B594508A77}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DB", "DB\DB.csproj", "{D0CE6F97-5056-4BF5-BBA7-EA7C520C0E6C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4D5FE624-1A90-4754-8F7A-15B594508A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D5FE624-1A90-4754-8F7A-15B594508A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D5FE624-1A90-4754-8F7A-15B594508A77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0CE6F97-5056-4BF5-BBA7-EA7C520C0E6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0CE6F97-5056-4BF5-BBA7-EA7C520C0E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0CE6F97-5056-4BF5-BBA7-EA7C520C0E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0CE6F97-5056-4BF5-BBA7-EA7C520C0E6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

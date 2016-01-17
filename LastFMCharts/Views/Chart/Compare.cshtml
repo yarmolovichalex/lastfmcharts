@@ -63,6 +63,9 @@
     </div>
 
     <div ng-show="ctrl.artistsInfo.length">
+        <div ng-repeat="artistInfo in ctrl.artistsInfo">
+            <p>{{artistInfo.Name}} was viewed {{artistInfo.Views}} times</p>
+        </div>
         <div>Listeners:</div>
         <div>
             <canvas id="listeners"></canvas>
