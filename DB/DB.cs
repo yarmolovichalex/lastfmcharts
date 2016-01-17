@@ -12,8 +12,10 @@ namespace DB
 
         public DBService()
         {
-            client = new MongoClient(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
-            database = client.GetDatabase("lastfmcharts");
+            var connectionString = ConfigurationManager.AppSettings.Get("MONGOLAB_URI") ?? "mongodb://localhost:27017/lastfmcharts";
+
+            client = new MongoClient(connectionString);
+            database = client.GetDatabase(MongoUrl.Create(connectionString).DatabaseName);
         }
 
         public int GetArtistViews(string name)
